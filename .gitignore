@@ -1,0 +1,8 @@
+# Node.js
+node_modules/
+
+# Compiled output
+dist/
+
+.DS_config
+.DS_store
