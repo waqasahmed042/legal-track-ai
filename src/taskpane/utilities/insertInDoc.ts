@@ -51,31 +51,75 @@ export const replaceTextInDocument = async (heading: string, newText: string, cl
                     .replace(/~~(.*?)~~/g, '$1');
 
                 // Insert a line break and the clean text after the heading
-                addTrackingModeForEveryOne();
+                await addTrackingModeForEveryOne();
                 headingRange.insertText("\n" + redlineText, "After");
                 await context.sync();
 
-                // Find the newly inserted paragraph and remove default styling
-                const insertedParagraphs = context.document.body.search(redlineText, { ignoreSpace: false, matchCase: false });
-                insertedParagraphs.load(["paragraphs"]);
-                await context.sync();
+                // For searching the newly inserted text, use the first 255 characters
+                // The following code related to applying formatting is removed as requested.
 
-                if (insertedParagraphs.items.length > 0) {
-                    // Assuming the first result is the newly inserted text's paragraph
-                    const paragraph = insertedParagraphs.items[0].paragraphs.items[0];
-                    paragraph.load("format");
-                    await context.sync();
+                // const searchText = cleanText.length > MAX_SEARCH_LENGTH
+                //     ? cleanText.substring(0, MAX_SEARCH_LENGTH)
+                //     : cleanText;
 
-                    // Remove indentation and spacing
-                    paragraph.format.leftIndent = 0;
-                    paragraph.format.rightIndent = 0;
-                    paragraph.format.firstLineIndent = 0;
-                    paragraph.format.spaceBefore = 0;
-                    paragraph.format.spaceAfter = 0;
-                    // You might also consider other properties like lineSpacing, horizontalAlignment etc.
+                // const insertedTextRange = context.document.body.search(searchText, SearchOptions);
+                // insertedTextRange.load(["text"]);
+                // await context.sync();
 
-                    await context.sync();
-                }
+                // if (insertedTextRange.items.length > 0) {
+                //     const insertedRange = insertedTextRange.items[0];
+
+                //     // Apply formatting
+                //     const boldMatches = newText.match(/\*\*(.*?)\*\*/g) || [];
+                //     const strikeMatches = newText.match(/~~(.*?)~~/g) || [];
+
+                //     const boldRanges = [];
+                //     const strikeRanges = [];
+
+                //     // Collect all ranges that need formatting
+                //     for (const match of boldMatches) {
+                //         const text = match.replace(/\*\*/g, '');
+                //         // Ensure search text isn't too long
+                //         const searchBoldText = text.length > MAX_SEARCH_LENGTH
+                //             ? text.substring(0, MAX_SEARCH_LENGTH)
+                //             : text;
+                //         const boldRange = insertedRange.search(searchBoldText, { ignoreSpace: false, matchCase: false });
+                //         boldRanges.push(boldRange);
+                //     }
+
+                //     for (const match of strikeMatches) {
+                //         const text = match.replace(/~~/g, '');
+                //         // Ensure search text isn't too long
+                //         const searchStrikeText = text.length > MAX_SEARCH_LENGTH
+                //             ? text.substring(0, MAX_SEARCH_LENGTH)
+                //             : text;
+                //         const strikeRange = insertedRange.search(searchStrikeText, { ignoreSpace: false, matchCase: false });
+                //         strikeRanges.push(strikeRange);
+                //     }
+
+                //     if (boldRanges.length > 0) {
+                //         boldRanges.forEach(r => r.load("font"));
+                //     }
+                //     if (strikeRanges.length > 0) {
+                //         strikeRanges.forEach(r => r.load("font"));
+                //     }
+
+                //     await context.sync();
+
+                //     boldRanges.forEach(r => {
+                //         r.items.forEach((item: { font: { bold: boolean; }; }) => {
+                //             item.font.bold = true;
+                //         });
+                //     });
+
+                //     strikeRanges.forEach(r => {
+                //         r.items.forEach((item: { font: { strikeThrough: boolean; }; }) => {
+                //             item.font.strikeThrough = true;
+                //         });
+                //     });
+
+                //     await context.sync();
+                // }
             } else {
                 console.log("No heading found in document");
             }
